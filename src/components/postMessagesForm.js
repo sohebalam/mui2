@@ -1,8 +1,10 @@
 import { Button, Divider, FormControl, Grid, TextField, withStyles } from '@material-ui/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useForm from './useForm'
 import {connect}from 'react-redux'
 import * as actions from '../actions/postMessage'
+import ButtorToast, {Cinnamon} from 'butter-toast'
+import { AssignmentTurnedIn } from '@material-ui/icons'
 
 
 
@@ -32,6 +34,16 @@ const initialfieldValues = {
     message: ''
 }
 const PostMessagesForm = ({classes, ...props}) => {
+ useEffect(() => {
+    if(props.currentId !==0){
+        setValues({
+        ...props.postMessageList.find(x => x._id === props.currentId)
+        })
+        setErrors({})
+    }
+    }, [props.currentId, props.postMessageList, setValues])
+
+    
     const validate = () => {
         let temp = {...errors}
         temp.title = values.title?'':'this field is required'
@@ -47,18 +59,29 @@ const PostMessagesForm = ({classes, ...props}) => {
      setValues,
      errors,
      setErrors,
-     handleInputChange
+     handleInputChange,
+     resetForm
     } 
-    = useForm(initialfieldValues)
+    = useForm(initialfieldValues, props.setCurrentId)
  
     const handleSubmit = e => {
         e.preventDefault()
-        const onSuccess = () => 
-            { window.alert('validate successfull')}
-        if(validate()) {
+        const onSuccess = () => {
+            ButtorToast.raise({
+                content: <Cinnamon.Crisp title ='Post Box'
+                content ='Submitted Successfully'
+                scheme = {Cinnamon.Crisp.SCHEME_PURPLE}
+                icon={<AssignmentTurnedIn/>}/>
+            })
+            resetForm()
+        }
+        
+            if(validate()) {
+            if(props.currentId===0)
        
         props.createPostMessage(values, onSuccess)
-    
+            else
+            props.updatePostMessage(props.currentId, values, onSuccess)
             }
 
     }
