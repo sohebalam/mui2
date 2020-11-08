@@ -29,18 +29,29 @@ const initialfieldValues = {
     message: ''
 }
 const PostMessagesForm = ({classes, ...props}) => {
+    const validate = () => {
+        let temp = {...errors}
+        temp.title = values.title?'':'this field is required'
+        temp.message = values.message?'':'this field is required'
+        setErrors({
+            ...temp
+        })
+        return Object.values(temp).every(x => x==='')
+    }
  var{ 
      values,
  
      setValues,
-
+     errors,
+     setErrors,
      handleInputChange
     } 
     = useForm(initialfieldValues)
  
     const handleSubmit = e => {
         e.preventDefault()
-        console.log(values)
+        if(validate())
+        window.alert('validate successfull')
     }
 
 
@@ -54,6 +65,7 @@ const PostMessagesForm = ({classes, ...props}) => {
         fullWidth 
         value={values.title}
         onChange ={ handleInputChange}
+        {...(errors.title && {error: true, helperText: errors.title})}
         />
         
    
@@ -64,6 +76,7 @@ const PostMessagesForm = ({classes, ...props}) => {
          fullWidth 
          value={values.message}
          onChange ={ handleInputChange}
+         {...(errors.message && {error: true, helperText: errors.message})}
          />
 
          <Button variant='contained' color='primary' size='large' type='submit' className={classes.postBtn}>Submit</Button>
