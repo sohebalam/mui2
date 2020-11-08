@@ -1,6 +1,6 @@
 import { AppBar, Container, Typography } from '@material-ui/core';
 import {Provider} from 'react-redux'
-import './App.css';
+
 import PostMessages from './components/postMessages';
 import {store} from './store'
 
