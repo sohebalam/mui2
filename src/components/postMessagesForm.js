@@ -1,6 +1,9 @@
 import { Button, Divider, FormControl, Grid, TextField, withStyles } from '@material-ui/core'
 import React, { useState } from 'react'
 import useForm from './useForm'
+import {connect}from 'react-redux'
+import * as actions from '../actions/postMessage'
+
 
 
 const styles = theme => ({
@@ -50,8 +53,14 @@ const PostMessagesForm = ({classes, ...props}) => {
  
     const handleSubmit = e => {
         e.preventDefault()
-        if(validate())
-        window.alert('validate successfull')
+        const onSuccess = () => 
+            { window.alert('validate successfull')}
+        if(validate()) {
+       
+        props.createPostMessage(values, onSuccess)
+    
+            }
+
     }
 
 
@@ -84,4 +93,16 @@ const PostMessagesForm = ({classes, ...props}) => {
     )
 }
 
-export default withStyles(styles)(PostMessagesForm)
+const mapStateToProps = state => ({ 
+    postMessageList : state.postMessage.list
+})
+
+
+
+const mapActionToProps ={ 
+    createPostMessage : actions.create,
+    updatePostMessage : actions.update
+}
+
+
+export default connect(mapStateToProps, mapActionToProps ) (withStyles(styles)(PostMessagesForm))
